@@ -102,8 +102,8 @@ let bar: void = undefined;
 
 // errorが出ない
 // Any is not a solution but start of bigger problems
-let cool: any = 'cool';
-console.log(cool.c())
+// let cool: any = 'cool';
+// console.log(cool.c())
 
 
 let vAny: any = 10;
@@ -111,7 +111,7 @@ let vUnknown: unknown = 10;
 
 // こっちはok
 let s1: string = vAny;
-console.log(vAny.foo());
+// console.log(vAny.foo());
 // こっちは無理
 // let s2: string = vUnknown;
 // console.log(vUnknown.foo());
@@ -134,13 +134,13 @@ let hageNumber = hage as string;
 
 // as ~ をつけないと、Elementとして認識されるので、valueを出力しようとするとerrorになる。それは、型assertionで防げる。
 const someElement = document.querySelector('.foo') as HTMLInputElement;
-console.log("someElement", someElement.value)
+// console.log("someElement", someElement.value)
 
 const aElement = document.querySelector('.bar');
-aElement.addEventListener('blur', (event) => {
-    const target = event.target as HTMLInputElement;
-    console.log('event', target.value)
-});
+// aElement.addEventListener('blur', (event) => {
+//     const target = event.target as HTMLInputElement;
+//     console.log('event', target.value)
+// });
 
 interface UInterface {
     getFullname(): string;
@@ -195,3 +195,92 @@ class Admin extends User {
 const admin = new Admin('foo', 'bar')
 admin.setEditor('fb')
 console.log(admin.getEditor())
+
+// 「型も変数のように扱えるようにする」というのがジェネリクスの発想！！
+// All generic data types are written inside "<>"
+// const addId = <T extends object>(obj: T) => {
+const addId = <T>(obj: T) => {
+    const id = Math.random().toString(16);
+    return {
+        ...obj,
+        id
+    }
+}
+
+const user6 = {
+    name: 'Jack',
+}
+
+const result = addId(user6);
+console.log('result', result);
+
+interface Ginterface<T> {
+    name: string;
+    data: T;
+}
+
+const user7: Ginterface<{meta: string}> = {
+    name: 'Guest',
+    data: {
+        meta: 'foo'
+    }
+}
+
+const user8: Ginterface<string[]> = {
+    name: 'niko',
+    data: ['foo', 'bar', 'baz']
+};
+
+const result2 = addId<Ginterface<{meta:string}>>(user7);
+console.log('result2', result);
+
+const result3 = addId<string>('foo');
+console.log("result3", result3);
+
+interface G2interface<T, V> {
+    name: string,
+    data: T,
+    meta: V,
+}
+
+const user9: G2interface<{ meta: string}, string> = {
+    name: 'u9',
+    data: {
+        meta: 'foo',
+    },
+    meta: 'bar',
+}
+
+// const updatedArray = append<string>('baz', ['foo', 'bar']);
+
+// const searchStr = 'foo';
+// const hasSearchedString = any<string>((el: string) => el.includes(searchStr), ['fooooo', 'bar', 'baz']);
+
+
+// const statuses = {
+//     notStarted: 0,
+//     inProgress: 1,
+//     done: 2
+// }
+
+// console.log(statuses.inProgress);
+
+enum StatusEnum {
+    NotStarted,
+    InProgress,
+    Done
+}
+
+let notStartedStatus: StatusEnum = StatusEnum.NotStarted;
+console.log("notStartedStatus", notStartedStatus);
+notStartedStatus = StatusEnum.Done;
+console.log("notStartedStatus", notStartedStatus);
+
+console.log('Status', StatusEnum)
+console.log('Status', StatusEnum.InProgress)
+
+interface Task {
+    id: string
+    status: StatusEnum;
+}
+
